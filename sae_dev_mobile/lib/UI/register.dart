@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
-import 'home.dart';
-import 'register.dart';
+import 'login.dart';
+import 'package:sae_dev_mobile/classes/utilisateurBD.dart';
 
-class Login extends StatelessWidget {
+class Register extends StatelessWidget {
   final TextEditingController mailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
@@ -11,7 +10,7 @@ class Login extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Login'),
+        title: Text('Inscription'),
       ),
       body: Padding(
         padding: EdgeInsets.all(16.0),
@@ -36,25 +35,29 @@ class Login extends StatelessWidget {
             SizedBox(height: 32.0),
             ElevatedButton(
               onPressed: () async {
-                await Supabase.instance.client.auth.signInWithPassword(
-                    email: mailController.text,
-                    password: passwordController.text);
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => Home()),
+                bool success = await UtilisateurBD.inscrireUtilisateur(
+                  mailController.text,
+                  passwordController.text,
                 );
+
+                if (success) {
+                  Navigator.pop(context);
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text("Mail déjà utilisé !"),
+                    ),
+                  );
+                }
               },
-              child: Text('Se connecter'),
+              child: Text("S'inscrire"),
             ),
             SizedBox(height: 16.0),
             ElevatedButton(
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => Register()),
-                );
+                Navigator.pop(context);
               },
-              child: Text('Pas encore un compte ? Inscrivez-vous !'),
+              child: Text('Déjà un compte ? Connectez-vous !'),
             ),
           ],
         ),
