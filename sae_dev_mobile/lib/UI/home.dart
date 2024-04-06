@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import '../classes/demandeBD.dart';
 import '../classes/utilisateurBD.dart';
 import 'profil.dart';
+import 'demande_detail.dart'; // Import de la page DemandeDetail.dart
 
 class Home extends StatelessWidget {
   @override
@@ -29,34 +30,49 @@ class Home extends StatelessWidget {
                 itemBuilder: (context, index) {
                   final demande = demandes[index];
                   return Card(
-                    child: ListTile(
-                      leading: CircleAvatar(),
-                      title: Text(
-                        demande.titreDemande,
-                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                      ),
-                      subtitle: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SizedBox(height: 8),
-                          Text(
-                            demande.descriptionDemande,
-                            style: TextStyle(fontSize: 16),
+                    child: GestureDetector( // Envelopper le ListTile avec GestureDetector
+                      onTap: () {
+                        // Navigation vers la page DemandeDetail avec les informations de la demande
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => DemandeDetail(demande: demande),
                           ),
-                          SizedBox(height: 8),
-                          Text(
-                            'Date de publication : ${DateFormat('dd/MM/yyyy').format(demande.datePublication)}',
-                            style: TextStyle(fontSize: 14, color: Colors.green),
-                          ),
-                          Text(
-                            'Date de début : ${DateFormat('dd/MM/yyyy').format(demande.dateDebutDemande)}',
-                            style: TextStyle(fontSize: 14),
-                          ),
-                          Text(
-                            'Date de fin : ${DateFormat('dd/MM/yyyy').format(demande.dateFinDemande)}',
-                            style: TextStyle(fontSize: 14),
-                          ),
-                        ],
+                        );
+                      },
+                      child: ListTile(
+                        leading: CircleAvatar(),
+                        title: Text(
+                          demande.titreDemande,
+                          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                        ),
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SizedBox(height: 8),
+                            Text(
+                              demande.descriptionDemande,
+                              style: TextStyle(fontSize: 16),
+                            ),
+                            SizedBox(height: 8),
+                            Text(
+                              'Statut : ${demande.statutDemande}',
+                              style: TextStyle(fontSize: 14, color: Colors.deepOrange),
+                            ),
+                            Text(
+                              'Date de publication : ${DateFormat('dd/MM/yyyy').format(demande.datePublication)}',
+                              style: TextStyle(fontSize: 14, color: Colors.green),
+                            ),
+                            Text(
+                              'Date de début : ${DateFormat('dd/MM/yyyy').format(demande.dateDebutDemande)}',
+                              style: TextStyle(fontSize: 14),
+                            ),
+                            Text(
+                              'Date de fin : ${DateFormat('dd/MM/yyyy').format(demande.dateFinDemande)}',
+                              style: TextStyle(fontSize: 14),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   );
