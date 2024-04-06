@@ -80,7 +80,7 @@ class Home extends StatelessWidget {
                 child: TextButton.icon(
                   onPressed: () {
                     // Navigation vers la page de profil
-                    Navigator.pushReplacement(
+                    Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => Profil()),
                     );

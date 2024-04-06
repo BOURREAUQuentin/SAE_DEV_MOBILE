@@ -1,4 +1,7 @@
+import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+
+import '../UI/home.dart';
 
 class UtilisateurBD {
   final String idUtilisateur;
@@ -17,47 +20,36 @@ class UtilisateurBD {
     required this.mdpUtilisateur,
   });
 
-  static Future<String> inscrireUtilisateur(String nomUtilisateur, String prenomUtilisateur, String pseudoUtilisateur, String mailUtilisateur, String motDePasse) async {
+  static Future<String> inscrireUtilisateur(BuildContext context, String nomUtilisateur, String prenomUtilisateur, String pseudoUtilisateur, String mailUtilisateur, String motDePasse) async {
     try {
-      // vérifie si mail existe déjà
-      if (await existeUtilisateur(mailUtilisateur)) {
-        print('Cet e-mail est déjà utilisé.');
-        return 'Cet e-mail est déjà utilisé.';
-      }
       // inscription dans l'Authentificator
       final nouvelUtilisateur = await Supabase.instance.client.auth.signUp(email: mailUtilisateur, password: motDePasse);
-
+      print(nouvelUtilisateur);
+      print("utilisateur");
       // récupère l'uuid du nouvel utilisateur
       final String uuidUtilisateur = nouvelUtilisateur.user!.id!;
 
       // inscription dans la table UTILISATEUR
       await ajouterUtilisateur(uuidUtilisateur, nomUtilisateur, prenomUtilisateur, pseudoUtilisateur, mailUtilisateur, motDePasse);
 
-      return "";
-    } catch (error) {
-      print("Erreur lors de l'inscription: $error");
-      return "Mot de passe d'au moins 6 caractères";
-    }
-  }
-
-  static Future<bool> existeUtilisateur(String mailUtilisateur) async {
-    try {
-      final response = await Supabase.instance.client.auth.getUserIdentities();
-      print(response);
-      for (var identity in response) {
-        Map<String, dynamic>? identityData = identity.identityData;
-        if (identityData != null) {
-          String? email = identityData['email'];
-          if (email != null && email == mailUtilisateur) {
-            return true;
-          }
-        }
+      // Navigation vers la page Home et connexion de l'utilisateur
+      final session = await Supabase.instance.client.auth.signInWithPassword(email: mailUtilisateur, password: motDePasse);
+      if (session != null) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => Home()),
+        );
       }
-      return false;
+      else {
+        print("Erreur lors de la connexion de l'utilisateur");
+        return "Erreur lors de la connexion de l'utilisateur";
+      }
+
+      return "";
     }
     catch (error) {
-      print("Erreur lors de la vérification de l'existence de l'utilisateur: $error");
-      return true;
+      print("Erreur lors de l'inscription: $error");
+      return error.toString();
     }
   }
 

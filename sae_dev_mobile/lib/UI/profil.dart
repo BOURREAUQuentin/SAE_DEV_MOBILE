@@ -18,7 +18,7 @@ class Profil extends StatelessWidget {
             return Center(child: CircularProgressIndicator());
           } else {
             if (snapshot.hasError) {
-              return Center(child: Text('Une erreur s\'est produite'));
+              return Center(child: Text("Une erreur s'est produite"));
             } else {
               final user = snapshot.data;
               return SingleChildScrollView(
@@ -138,10 +138,7 @@ class Profil extends StatelessWidget {
               Expanded(
                 child: TextButton.icon(
                   onPressed: () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(builder: (context) => Home()),
-                    );
+                    Navigator.pop(context);
                   },
                   icon: Icon(Icons.home),
                   label: Text('Accueil'),
@@ -150,11 +147,7 @@ class Profil extends StatelessWidget {
               Expanded(
                 child: TextButton.icon(
                   onPressed: () {
-                    // Navigation vers la page de profil
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(builder: (context) => Profil()),
-                    );
+                    
                   },
                   icon: Icon(Icons.person),
                   label: Text('Profil'),

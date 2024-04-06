@@ -74,6 +74,7 @@ class Register extends StatelessWidget {
                 }
 
                 final String response = await UtilisateurBD.inscrireUtilisateur(
+                  context,
                   nomController.text,
                   prenomController.text,
                   pseudoController.text,
@@ -81,9 +82,7 @@ class Register extends StatelessWidget {
                   passwordController.text,
                 );
 
-                if (response == "") {
-                  Navigator.pop(context);
-                } else {
+                if (response != "") {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text(response),
