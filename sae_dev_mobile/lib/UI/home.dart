@@ -1,56 +1,67 @@
 import 'package:flutter/material.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
+import '../classes/demandeBD.dart';
+import 'package:intl/intl.dart'; // bibliothèque intl pour formatter les dates
 import 'profil.dart';
 
 class Home extends StatelessWidget {
-  getCategories() async {
-    final data = await Supabase.instance.client.from('PRODUIT').select();
-    await Supabase.instance.client.from('CATEGORIE').insert({
-      'idCategorie': 8,
-      'nomCategorie': 'Informatique',
-    });
-    print("liste de categories");
-    print(data);
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Home'),
       ),
-      body: Column(
-        children: [
-          ElevatedButton(
-            onPressed: () {
-              getCategories();
-            },
-            child: null,
-          ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: 5, // Nombre d'annonces fictives
-              itemBuilder: (context, index) {
-                return Card(
-                  child: ListTile(
-                    leading: Icon(Icons.image), // Remplacer par votre image
-                    title: Text(
-                      'Titre de l\'annonce $index',
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+      body: FutureBuilder<List<DemandeBD>>(
+        future: DemandeBD.getDemandes(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else {
+            if (snapshot.hasError) {
+              return Center(child: Text('Erreur: ${snapshot.error}'));
+            } else {
+              final demandes = snapshot.data ?? [];
+              return ListView.builder(
+                itemCount: demandes.length,
+                itemBuilder: (context, index) {
+                  final demande = demandes[index];
+                  return Card(
+                    child: ListTile(
+                      leading: CircleAvatar(
+                      ),
+                      title: Text(
+                        demande.titreDemande,
+                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                      ),
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(height: 8),
+                          Text(
+                            demande.descriptionDemande,
+                            style: TextStyle(fontSize: 16),
+                          ),
+                          SizedBox(height: 8),
+                          Text(
+                            'Date de publication : ${DateFormat('dd/MM/yyyy').format(demande.datePublication)}',
+                            style: TextStyle(fontSize: 14, color: Colors.green),
+                          ),
+                          Text(
+                            'Date de début : ${DateFormat('dd/MM/yyyy').format(demande.dateDebutDemande)}',
+                            style: TextStyle(fontSize: 14),
+                          ),
+                          Text(
+                            'Date de fin : ${DateFormat('dd/MM/yyyy').format(demande.dateFinDemande)}',
+                            style: TextStyle(fontSize: 14),
+                          ),
+                        ],
+                      ),
                     ),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('Description de l\'annonce $index'),
-                        Text('Date de l\'annonce $index', style: TextStyle(fontSize: 12)),
-                      ],
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
-        ],
+                  );
+                },
+              );
+            }
+          }
+        },
       ),
       bottomNavigationBar: BottomAppBar(
         child: Padding(
