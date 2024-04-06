@@ -3,14 +3,12 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'profil.dart';
 
 class Home extends StatelessWidget {
-
-  getCategories() async{
+  getCategories() async {
     final data = await Supabase.instance.client.from('PRODUIT').select();
     await Supabase.instance.client.from('CATEGORIE').insert({
-        'idCategorie': 8,
-        'nomCategorie': 'Informatique',
-      },
-    );
+      'idCategorie': 8,
+      'nomCategorie': 'Informatique',
+    });
     print("liste de categories");
     print(data);
   }
@@ -24,9 +22,10 @@ class Home extends StatelessWidget {
       body: Column(
         children: [
           ElevatedButton(
-            onPressed: (){
+            onPressed: () {
               getCategories();
-            }, child: null,
+            },
+            child: null,
           ),
           Expanded(
             child: ListView.builder(
@@ -51,47 +50,48 @@ class Home extends StatelessWidget {
               },
             ),
           ),
-          Divider(), // Séparateur entre la liste et le menu
-          Padding(
-            padding: EdgeInsets.only(top: 3.0, bottom: 9.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                Expanded(
-                  child: TextButton.icon(
-                    onPressed: () {
-                      // Navigation vers la page de création d'annonce
-                    },
-                    icon: Icon(Icons.add),
-                    label: Text('Ajouter'),
-                  ),
-                ),
-                Expanded(
-                  child: TextButton.icon(
-                    onPressed: () {
-                      // Retour à la page d'accueil
-                    },
-                    icon: Icon(Icons.home),
-                    label: Text('Accueil'),
-                  ),
-                ),
-                Expanded(
-                  child: TextButton.icon(
-                    onPressed: () {
-                      // Navigation vers la page de profil
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(builder: (context) => Profil()),
-                      );
-                    },
-                    icon: Icon(Icons.person),
-                    label: Text('Profil'),
-                  ),
-                ),
-              ],
-            ),
-          ),
         ],
+      ),
+      bottomNavigationBar: BottomAppBar(
+        child: Padding(
+          padding: EdgeInsets.only(top: 3.0, bottom: 9.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              Expanded(
+                child: TextButton.icon(
+                  onPressed: () {
+                    // Navigation vers la page de création d'annonce
+                  },
+                  icon: Icon(Icons.add),
+                  label: Text('Ajouter'),
+                ),
+              ),
+              Expanded(
+                child: TextButton.icon(
+                  onPressed: () {
+                    // Retour à la page d'accueil
+                  },
+                  icon: Icon(Icons.home),
+                  label: Text('Accueil'),
+                ),
+              ),
+              Expanded(
+                child: TextButton.icon(
+                  onPressed: () {
+                    // Navigation vers la page de profil
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => Profil()),
+                    );
+                  },
+                  icon: Icon(Icons.person),
+                  label: Text('Profil'),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

@@ -13,7 +13,7 @@ class Login extends StatelessWidget {
       appBar: AppBar(
         title: Text('Login'),
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: EdgeInsets.all(16.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -36,9 +36,20 @@ class Login extends StatelessWidget {
             SizedBox(height: 32.0),
             ElevatedButton(
               onPressed: () async {
+                // Vérifier si les deux champs sont remplis
+                if (mailController.text.isEmpty || passwordController.text.isEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text("Veuillez remplir tous les champs."),
+                    ),
+                  );
+                  return;
+                }
+
                 await Supabase.instance.client.auth.signInWithPassword(
-                    email: mailController.text,
-                    password: passwordController.text);
+                  email: mailController.text,
+                  password: passwordController.text,
+                );
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(builder: (context) => Home()),

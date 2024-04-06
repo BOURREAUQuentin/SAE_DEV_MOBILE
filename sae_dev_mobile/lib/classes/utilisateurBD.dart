@@ -1,4 +1,3 @@
-import 'package:sae_dev_mobile/main.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class UtilisateurBD {
@@ -18,26 +17,33 @@ class UtilisateurBD {
     required this.mdpUtilisateur,
   });
 
-  static Future<bool> inscrireUtilisateur(String mailUtilisateur, String motDePasse) async {
+  static Future<String> inscrireUtilisateur(String nomUtilisateur, String prenomUtilisateur, String pseudoUtilisateur, String mailUtilisateur, String motDePasse) async {
     try {
-      // Vérifie si le mail existe déjà
+      // vérifie si mail existe déjà
       if (await existeUtilisateur(mailUtilisateur)) {
         print('Cet e-mail est déjà utilisé.');
-        return false;
+        return 'Cet e-mail est déjà utilisé.';
       }
+      // inscription dans l'Authentificator
+      final nouvelUtilisateur = await Supabase.instance.client.auth.signUp(email: mailUtilisateur, password: motDePasse);
 
-      // Mail n'existe pas, inscrire l'utilisateur
-      await Supabase.instance.client.auth.signUp(email: mailUtilisateur, password: motDePasse);
-      return true;
+      // récupère l'uuid du nouvel utilisateur
+      final String uuidUtilisateur = nouvelUtilisateur.user!.id!;
+
+      // inscription dans la table UTILISATEUR
+      await ajouterUtilisateur(uuidUtilisateur, nomUtilisateur, prenomUtilisateur, pseudoUtilisateur, mailUtilisateur, motDePasse);
+
+      return "";
     } catch (error) {
       print("Erreur lors de l'inscription: $error");
-      return false;
+      return "Mot de passe d'au moins 6 caractères";
     }
   }
 
   static Future<bool> existeUtilisateur(String mailUtilisateur) async {
     try {
       final response = await Supabase.instance.client.auth.getUserIdentities();
+      print(response);
       for (var identity in response) {
         Map<String, dynamic>? identityData = identity.identityData;
         if (identityData != null) {
@@ -52,6 +58,33 @@ class UtilisateurBD {
     catch (error) {
       print("Erreur lors de la vérification de l'existence de l'utilisateur: $error");
       return true;
+    }
+  }
+
+  static Future<void> ajouterUtilisateur(String uuidUtilisateur, String nomUtilisateur, String prenomUtilisateur, String pseudoUtilisateur, String mailUtilisateur, String motDePasse) async {
+    try {
+      await Supabase.instance.client.from('UTILISATEUR').insert({
+        'uuidUtilisateur': uuidUtilisateur,
+        'nomUtilisateur': nomUtilisateur,
+        'prenomUtilisateur': prenomUtilisateur,
+        'pseudoUtilisateur': pseudoUtilisateur,
+        'mailUtilisateur': mailUtilisateur,
+        'mdpUtilisateur': motDePasse
+      });
+    }
+    catch (error) {
+      print("Erreur lors de l'ajout d'un nouvel utilisateur: $error");
+    }
+  }
+
+  static Future<User?> getUtilisateurConnecte() async {
+    try {
+      final user = Supabase.instance.client.auth.currentUser;
+      return user;
+    }
+    catch (error) {
+      print("Erreur lors de la récupération de l'utilisateur connecté: $error");
+      return null;
     }
   }
 }
