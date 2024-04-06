@@ -29,34 +29,40 @@ class DemandeDetail extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
                     demande.titreDemande,
                     style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                    textAlign: TextAlign.center,
                   ),
                   SizedBox(height: 16),
                   Text(
                     demande.descriptionDemande,
                     style: TextStyle(fontSize: 18),
+                    textAlign: TextAlign.center, // Centrer le texte
                   ),
                   SizedBox(height: 16),
                   Text(
                     'Statut : ${demande.statutDemande}',
                     style: TextStyle(fontSize: 16, color: Colors.deepOrange),
+                    textAlign: TextAlign.center,
                   ),
                   SizedBox(height: 8),
                   Text(
                     'Date de publication : ${DateFormat('dd/MM/yyyy').format(demande.datePublication)}',
                     style: TextStyle(fontSize: 16, color: Colors.green),
+                    textAlign: TextAlign.center,
                   ),
                   Text(
                     'Date de début : ${DateFormat('dd/MM/yyyy').format(demande.dateDebutDemande)}',
                     style: TextStyle(fontSize: 16),
+                    textAlign: TextAlign.center,
                   ),
                   Text(
                     'Date de fin : ${DateFormat('dd/MM/yyyy').format(demande.dateFinDemande)}',
                     style: TextStyle(fontSize: 16),
+                    textAlign: TextAlign.center,
                   ),
                 ],
               ),

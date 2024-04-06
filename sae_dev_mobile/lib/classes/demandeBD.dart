@@ -8,6 +8,7 @@ class DemandeBD {
   final String statutDemande;
   final DateTime dateDebutDemande;
   final DateTime dateFinDemande;
+  final int idCategorie;
 
   DemandeBD({
     required this.idDemande,
@@ -17,6 +18,7 @@ class DemandeBD {
     required this.statutDemande,
     required this.dateDebutDemande,
     required this.dateFinDemande,
+    required this.idCategorie,
   });
 
   static Future<List<DemandeBD>> getDemandes(String uuidUtilisateur) async {
@@ -48,6 +50,7 @@ class DemandeBD {
       statutDemande: map['statutDemande'] ?? '',
       dateDebutDemande: DateTime.tryParse(map['dateDebutDemande'] ?? '') ?? DateTime.now(),
       dateFinDemande: DateTime.tryParse(map['dateFinDemande'] ?? '') ?? DateTime.now(),
+      idCategorie: map['idCategorie'] ?? 0,
     );
   }
 }
