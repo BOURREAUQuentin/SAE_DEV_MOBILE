@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import '../classes/demandeBD.dart';
-import 'package:intl/intl.dart'; // bibliothèque intl pour formatter les dates
+import '../classes/utilisateurBD.dart';
 import 'profil.dart';
 
 class Home extends StatelessWidget {
@@ -11,7 +12,10 @@ class Home extends StatelessWidget {
         title: Text('Home'),
       ),
       body: FutureBuilder<List<DemandeBD>>(
-        future: DemandeBD.getDemandes(),
+        future: () async {
+          final utilisateur = await UtilisateurBD.getUtilisateurConnecte();
+          return DemandeBD.getDemandes(utilisateur?.uuidUtilisateur ?? '');
+        }(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
@@ -26,8 +30,7 @@ class Home extends StatelessWidget {
                   final demande = demandes[index];
                   return Card(
                     child: ListTile(
-                      leading: CircleAvatar(
-                      ),
+                      leading: CircleAvatar(),
                       title: Text(
                         demande.titreDemande,
                         style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),

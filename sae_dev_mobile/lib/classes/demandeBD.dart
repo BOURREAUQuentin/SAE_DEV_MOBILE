@@ -19,10 +19,11 @@ class DemandeBD {
     required this.dateFinDemande,
   });
 
-  static Future<List<DemandeBD>> getDemandes() async {
+  static Future<List<DemandeBD>> getDemandes(String uuidUtilisateur) async {
     try {
       final response = await Supabase.instance.client.from('DEMANDE')
           .select()
+          .neq('uuidDemandeur', uuidUtilisateur)
           .order('datePublication', ascending: false);
       print(response);
       if (response != null) {

@@ -11,16 +11,16 @@ class Profil extends StatelessWidget {
       appBar: AppBar(
         title: Text('Profil'),
       ),
-      body: FutureBuilder<User?>(
+      body: FutureBuilder<UtilisateurBD?>(
         future: UtilisateurBD.getUtilisateurConnecte(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
           } else {
-            if (snapshot.hasError) {
+            if (snapshot.hasError || snapshot.data == null) {
               return Center(child: Text("Une erreur s'est produite"));
             } else {
-              final user = snapshot.data;
+              final utilisateur = snapshot.data!;
               return SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -38,14 +38,21 @@ class Profil extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'Mail: ${user?.email}',
+                                  'Mail: ${utilisateur.mailUtilisateur}',
                                   style: TextStyle(
                                     fontSize: 12,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
                                 Text(
-                                  'Prénom',
+                                  'Prénom: ${utilisateur.prenomUtilisateur}',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                Text(
+                                  'Nom: ${utilisateur.nomUtilisateur}',
                                   style: TextStyle(
                                     fontSize: 12,
                                     fontWeight: FontWeight.bold,
@@ -146,9 +153,7 @@ class Profil extends StatelessWidget {
               ),
               Expanded(
                 child: TextButton.icon(
-                  onPressed: () {
-
-                  },
+                  onPressed: () {},
                   icon: Icon(Icons.person),
                   label: Text('Profil'),
                 ),

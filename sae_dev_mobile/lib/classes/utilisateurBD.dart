@@ -4,7 +4,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../UI/home.dart';
 
 class UtilisateurBD {
-  final String idUtilisateur;
+  final String uuidUtilisateur;
   final String prenomUtilisateur;
   final String nomUtilisateur;
   final String pseudoUtilisateur;
@@ -12,7 +12,7 @@ class UtilisateurBD {
   final String mdpUtilisateur;
 
   UtilisateurBD({
-    required this.idUtilisateur,
+    required this.uuidUtilisateur,
     required this.prenomUtilisateur,
     required this.nomUtilisateur,
     required this.pseudoUtilisateur,
@@ -69,12 +69,25 @@ class UtilisateurBD {
     }
   }
 
-  static Future<User?> getUtilisateurConnecte() async {
+  static Future<UtilisateurBD?> getUtilisateurConnecte() async {
     try {
       final user = Supabase.instance.client.auth.currentUser;
-      return user;
-    }
-    catch (error) {
+      if (user != null) {
+        final uuidUtilisateur = user.id!;
+        final response = await Supabase.instance.client.from('UTILISATEUR').select().eq('uuidUtilisateur', uuidUtilisateur).single();
+        if (response != null) {
+          return UtilisateurBD(
+            uuidUtilisateur: response['uuidUtilisateur'],
+            prenomUtilisateur: response['prenomUtilisateur'],
+            nomUtilisateur: response['nomUtilisateur'],
+            pseudoUtilisateur: response['pseudoUtilisateur'],
+            mailUtilisateur: response['mailUtilisateur'],
+            mdpUtilisateur: response['mdpUtilisateur'],
+          );
+        }
+      }
+      return null;
+    } catch (error) {
       print("Erreur lors de la récupération de l'utilisateur connecté: $error");
       return null;
     }
