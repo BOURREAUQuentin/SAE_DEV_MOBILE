@@ -125,6 +125,11 @@ class DatabaseLocale {
     return db.query('DEMANDE');
   }
 
+  Future<List<Map<String, dynamic>>> getDemandesNonPubliees() async {
+    final db = await instance.database;
+    return db.query('DEMANDE', where: 'estPublie = ?', whereArgs: ['N']);
+  }
+
   Future<List<Map<String, dynamic>>> getPrets() async {
     final db = await instance.database;
     return db.query('PRET');
@@ -226,6 +231,20 @@ class DatabaseLocale {
       );
     } catch (error) {
       print("Erreur lors de la publication du prêt : $error");
+    }
+  }
+
+  Future<void> publierDemande(int idDemande) async {
+    try {
+      final db = await instance.database;
+      await db.update(
+        'DEMANDE',
+        {'estPublie': 'O'},
+        where: 'idDemande = ?',
+        whereArgs: [idDemande],
+      );
+    } catch (error) {
+      print("Erreur lors de la publication de la demande : $error");
     }
   }
 }

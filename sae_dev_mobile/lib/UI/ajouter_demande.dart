@@ -1,30 +1,30 @@
 import 'package:flutter/material.dart';
 import '../database/databaseLocale.dart';
+import '../classes/categorieBD.dart';
 
-class AjouterPret extends StatefulWidget {
+class AjouterDemande extends StatefulWidget {
   @override
-  _AjouterPretState createState() => _AjouterPretState();
+  _AjouterDemandeState createState() => _AjouterDemandeState();
 }
 
-class _AjouterPretState extends State<AjouterPret> {
-  final TextEditingController _titrePretController = TextEditingController();
-  final TextEditingController _descriptionPretController = TextEditingController();
-  final TextEditingController _dateDebutPretController = TextEditingController();
-  final TextEditingController _dateFinPretController = TextEditingController();
-  int _selectedProduitId = 1;
-
-  List<Map<String, dynamic>> _produits = []; // Liste des produits récupérés de la base de données locale
+class _AjouterDemandeState extends State<AjouterDemande> {
+  final TextEditingController _titreDemandeController = TextEditingController();
+  final TextEditingController _descriptionDemandeController = TextEditingController();
+  final TextEditingController _dateDebutDemandeController = TextEditingController();
+  final TextEditingController _dateFinDemandeController = TextEditingController();
+  int _selectedCategoryId = 1; // Catégorie par défaut
+  List<Map<String, dynamic>> _categories = [];
 
   @override
   void initState() {
     super.initState();
-    _chargerProduits();
+    _chargerCategories();
   }
 
-  Future<void> _chargerProduits() async {
-    final produits = await DatabaseLocale.instance.getProduits();
+  Future<void> _chargerCategories() async {
+    final categories = await CategorieBD.getCategories();
     setState(() {
-      _produits = produits;
+      _categories = categories;
     });
   }
 
@@ -32,7 +32,7 @@ class _AjouterPretState extends State<AjouterPret> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Ajouter un prêt'),
+        title: Text('Ajouter une demande'),
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(16.0),
@@ -40,42 +40,43 @@ class _AjouterPretState extends State<AjouterPret> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             TextField(
-              controller: _titrePretController,
-              decoration: InputDecoration(labelText: 'Titre du prêt'),
+              controller: _titreDemandeController,
+              decoration: InputDecoration(labelText: 'Titre de la demande'),
             ),
             TextField(
-              controller: _descriptionPretController,
-              decoration: InputDecoration(labelText: 'Description du prêt'),
+              controller: _descriptionDemandeController,
+              decoration: InputDecoration(labelText: 'Description de la demande'),
             ),
             TextField(
-              controller: _dateDebutPretController,
+              controller: _dateDebutDemandeController,
               decoration: InputDecoration(labelText: 'Date de début (YYYY-MM-DD)'),
             ),
             TextField(
-              controller: _dateFinPretController,
+              controller: _dateFinDemandeController,
               decoration: InputDecoration(labelText: 'Date de fin (YYYY-MM-DD)'),
             ),
+            SizedBox(height: 20),
             DropdownButtonFormField<int>(
-              value: _selectedProduitId,
+              value: _selectedCategoryId,
               onChanged: (value) {
                 setState(() {
-                  _selectedProduitId = value!;
+                  _selectedCategoryId = value!;
                 });
               },
-              items: _produits.map<DropdownMenuItem<int>>((produit) {
+              items: _categories.map<DropdownMenuItem<int>>((category) {
                 return DropdownMenuItem<int>(
-                  value: produit['idProduit'],
-                  child: Text(produit['nomProduit']),
+                  value: category['idCategorie'],
+                  child: Text(category['nomCategorie']),
                 );
               }).toList(),
-              decoration: InputDecoration(labelText: 'Sélectionnez un produit'),
+              decoration: InputDecoration(labelText: 'Catégorie de la demande'),
             ),
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                _ajouterPret();
+                _ajouterDemande();
               },
-              child: Text('Ajouter le prêt'),
+              child: Text('Ajouter la demande'),
             ),
           ],
         ),
@@ -83,15 +84,16 @@ class _AjouterPretState extends State<AjouterPret> {
     );
   }
 
-  Future<void> _ajouterPret() async {
-    final titrePret = _titrePretController.text;
-    final descriptionPret = _descriptionPretController.text;
-    final dateDebutPret = _dateDebutPretController.text;
-    final dateFinPret = _dateFinPretController.text;
+  Future<void> _ajouterDemande() async {
+    // Récupération des valeurs des champs
+    final titreDemande = _titreDemandeController.text;
+    final descriptionDemande = _descriptionDemandeController.text;
+    final dateDebutDemande = _dateDebutDemandeController.text;
+    final dateFinDemande = _dateFinDemandeController.text;
 
     // Vérification du format de date (YYYY-MM-DD)
     final dateFormat = RegExp(r'^\d{4}-\d{2}-\d{2}$');
-    if (!dateFormat.hasMatch(dateDebutPret) || !dateFormat.hasMatch(dateFinPret)) {
+    if (!dateFormat.hasMatch(dateDebutDemande) || !dateFormat.hasMatch(dateFinDemande)) {
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
@@ -111,7 +113,7 @@ class _AjouterPretState extends State<AjouterPret> {
     }
 
     // Vérification si la date de début est supérieure ou égale à la date actuelle
-    if (DateTime.parse(dateDebutPret).isBefore(DateTime.now())) {
+    if (DateTime.parse(dateDebutDemande).isBefore(DateTime.now())) {
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
@@ -131,7 +133,7 @@ class _AjouterPretState extends State<AjouterPret> {
     }
 
     // Vérification si la date de fin est supérieure à la date de début
-    if (DateTime.parse(dateFinPret).isBefore(DateTime.parse(dateDebutPret))) {
+    if (DateTime.parse(dateFinDemande).isBefore(DateTime.parse(dateDebutDemande))) {
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
@@ -150,8 +152,8 @@ class _AjouterPretState extends State<AjouterPret> {
       return;
     }
 
-    // Vérifiez si tous les champs sont remplis
-    if (titrePret.isEmpty || descriptionPret.isEmpty || dateDebutPret.isEmpty || dateFinPret.isEmpty) {
+    // Vérification si tous les champs sont remplis
+    if (titreDemande.isEmpty || descriptionDemande.isEmpty || dateDebutDemande.isEmpty || dateFinDemande.isEmpty) {
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
@@ -170,13 +172,13 @@ class _AjouterPretState extends State<AjouterPret> {
       return;
     }
 
-    // Vérifiez si un objet est sélectionné
-    if (_selectedProduitId == 1 && _produits.isEmpty) {
+    // Vérifiez si une catégorie est sélectionnée
+    if (_selectedCategoryId == 1 && _categories.isEmpty) {
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
           title: Text('Erreur'),
-          content: Text("Veuillez sélectionner un objet existant ou créer un nouvel objet dans la page 'Mes objets'."),
+          content: Text("Veuillez sélectionner une catégorie existante !"),
           actions: [
             TextButton(
               onPressed: () {
@@ -190,20 +192,28 @@ class _AjouterPretState extends State<AjouterPret> {
       return;
     }
 
-    // insertion en locale du pret
-    await DatabaseLocale.instance.insertPret(titrePret, descriptionPret, DateTime.now().toString(), "Disponible", dateDebutPret, dateFinPret, _selectedProduitId);
+    // Insertion de la demande dans la base de données
+    await DatabaseLocale.instance.insertDemande(
+      titreDemande,
+      descriptionDemande,
+      DateTime.now().toString(),
+      "En attente",
+      dateDebutDemande,
+      dateFinDemande,
+      _selectedCategoryId,
+    );
 
-    // Affichez un message de succès
+    // Affichage d'un message de succès
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         title: Text('Succès'),
-        content: Text('Le prêt a été ajouté avec succès.'),
+        content: Text('La demande a été ajoutée avec succès.'),
         actions: [
           TextButton(
             onPressed: () {
               Navigator.pop(context);
-              Navigator.pop(context); // Revenir à la page précédente après l'ajout
+              Navigator.pop(context); // Retour à la page précédente après l'ajout
             },
             child: Text('OK'),
           ),
@@ -214,11 +224,11 @@ class _AjouterPretState extends State<AjouterPret> {
 
   @override
   void dispose() {
-    // Disposez des contrôleurs de texte pour éviter les fuites de mémoire
-    _titrePretController.dispose();
-    _descriptionPretController.dispose();
-    _dateDebutPretController.dispose();
-    _dateFinPretController.dispose();
+    // Libération des ressources
+    _titreDemandeController.dispose();
+    _descriptionDemandeController.dispose();
+    _dateDebutDemandeController.dispose();
+    _dateFinDemandeController.dispose();
     super.dispose();
   }
 }

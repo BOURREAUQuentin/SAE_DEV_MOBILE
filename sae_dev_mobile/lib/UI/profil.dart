@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sae_dev_mobile/UI/mes_demandes.dart';
 import 'package:sae_dev_mobile/UI/mes_prets.dart';
 import 'package:sae_dev_mobile/UI/mes_publications.dart';
 import 'home.dart';
@@ -116,7 +117,10 @@ class Profil extends StatelessWidget {
                           text: 'Mes demandes',
                           icon: Icons.note,
                           onPressed: () {
-                            // todo
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => MesDemandes()),
+                            );
                           },
                         ),
                         ProfilButton(
@@ -148,15 +152,6 @@ class Profil extends StatelessWidget {
               Expanded(
                 child: TextButton.icon(
                   onPressed: () {
-                    // Navigation vers la page de création d'annonce
-                  },
-                  icon: Icon(Icons.add),
-                  label: Text('Ajouter'),
-                ),
-              ),
-              Expanded(
-                child: TextButton.icon(
-                  onPressed: () {
                     Navigator.pop(context);
                     Navigator.pushReplacement(
                         context,
@@ -168,7 +163,9 @@ class Profil extends StatelessWidget {
               ),
               Expanded(
                 child: TextButton.icon(
-                  onPressed: () {},
+                  onPressed: () {
+                    // aucune action
+                  },
                   icon: Icon(Icons.person),
                   label: Text('Profil'),
                 ),
