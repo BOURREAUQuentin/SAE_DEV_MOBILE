@@ -28,7 +28,7 @@ class PretBD {
     try {
       final response = await Supabase.instance.client.from('PRET')
           .select()
-          .eq('uuidPreteur', uuidPreteur)
+          .neq('uuidPreteur', uuidPreteur)
           .eq("statutPret", "Disponible")
           .order('datePublication', ascending: false);
       if (response != null) {

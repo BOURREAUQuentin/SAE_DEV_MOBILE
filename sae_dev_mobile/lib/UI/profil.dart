@@ -94,7 +94,7 @@ class Profil extends StatelessWidget {
                       children: [
                         // Boutons pour les différentes actions
                         ProfilButton(
-                          text: 'Mes objets',
+                          text: 'Mes Produits',
                           icon: Icons.inventory,
                           onPressed: () {
                             Navigator.push(
