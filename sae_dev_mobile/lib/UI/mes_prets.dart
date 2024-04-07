@@ -78,21 +78,11 @@ class _MesPretsState extends State<MesPrets> {
               Expanded(
                 child: TextButton.icon(
                   onPressed: () {
-                    // Navigation vers la page de création d'annonce
-                  },
-                  icon: Icon(Icons.add),
-                  label: Text('Ajouter'),
-                ),
-              ),
-              Expanded(
-                child: TextButton.icon(
-                  onPressed: () {
                     Navigator.pop(context);
                     Navigator.pop(context);
                     Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(builder: (context) => Home()),
-                    );
+                        context,
+                        MaterialPageRoute(builder: (context) => Home()));
                   },
                   icon: Icon(Icons.home),
                   label: Text('Accueil'),
@@ -102,10 +92,10 @@ class _MesPretsState extends State<MesPrets> {
                 child: TextButton.icon(
                   onPressed: () {
                     Navigator.pop(context);
+                    Navigator.pop(context);
                     Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(builder: (context) => Profil()),
-                    );
+                        context,
+                        MaterialPageRoute(builder: (context) => Profil()));
                   },
                   icon: Icon(Icons.person),
                   label: Text('Profil'),

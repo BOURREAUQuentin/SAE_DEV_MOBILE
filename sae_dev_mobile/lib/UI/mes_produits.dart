@@ -73,15 +73,6 @@ class _MesProduitsState extends State<MesProduits> {
               Expanded(
                 child: TextButton.icon(
                   onPressed: () {
-                    // Navigation vers la page de création d'annonce
-                  },
-                  icon: Icon(Icons.add),
-                  label: Text('Ajouter'),
-                ),
-              ),
-              Expanded(
-                child: TextButton.icon(
-                  onPressed: () {
                     Navigator.pop(context);
                     Navigator.pop(context);
                     Navigator.pushReplacement(
