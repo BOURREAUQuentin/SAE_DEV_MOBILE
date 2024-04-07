@@ -18,4 +18,17 @@ class PretBD {
     required this.dateFinPret,
     required this.idProduit,
   });
+
+  factory PretBD.fromMap(Map<String, dynamic> map) {
+    return PretBD(
+      idPret: map['idPret'],
+      titrePret: map['titrePret'],
+      descriptionPret: map['descriptionPret'],
+      datePublication: DateTime.tryParse(map['datePublication'] ?? '') ?? DateTime.now(),
+      statutPret: map['statutPret'],
+      dateDebutPret: DateTime.tryParse(map['dateDebutPret'] ?? '') ?? DateTime.now(),
+      dateFinPret: DateTime.tryParse(map['dateFinPret'] ?? '') ?? DateTime.now(),
+      idProduit: map['idProduit'],
+    );
+  }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sae_dev_mobile/UI/mes_prets.dart';
 import 'mes_produits.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../classes/utilisateurBD.dart';
@@ -103,19 +104,22 @@ class Profil extends StatelessWidget {
                           text: 'Mes prêts',
                           icon: Icons.assignment_turned_in,
                           onPressed: () {
-                            // Action lorsque le bouton "Mes prêts" est appuyé
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => MesPrets()),
+                            );
+                          },
+                        ),
+                        ProfilButton(
+                          text: 'Mes demandes',
+                          icon: Icons.note,
+                          onPressed: () {
+                            // todo
                           },
                         ),
                         ProfilButton(
                           text: 'Mes réservations',
                           icon: Icons.bookmark,
-                          onPressed: () {
-                            // Action lorsque le bouton "Mes réservations" est appuyé
-                          },
-                        ),
-                        ProfilButton(
-                          text: 'Mes annonces',
-                          icon: Icons.note,
                           onPressed: () {
                             // Action lorsque le bouton "Mes annonces" est appuyé
                           },

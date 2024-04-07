@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sae_dev_mobile/classes/categorieBD.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import '../database/databaseLocale.dart';
-import 'mes_produits.dart';
 
 class AjouterProduit extends StatefulWidget {
   @override
@@ -170,9 +168,10 @@ class _AjouterProduitState extends State<AjouterProduit> {
       return;
     }
 
-    // Effectuez l'insertion en base de données en utilisant la méthode insertProduit de votre classe DatabaseLocale
+    // insertion en locale du produit
     await DatabaseLocale.instance.insertProduit(nomProduit, descriptionProduit, lienImageProduit, _selectedCategoryId);
 
+    // insertion en distant uniquement de la categorie
     await CategorieBD.insertCategorie(_selectedCategoryId, _nouvelleCategorieController.text);
 
     // Affichez un message de succès
