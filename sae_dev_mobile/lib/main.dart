@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'UI/login.dart';
 import 'UI/home.dart';
+import 'database/databaseLocale.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -9,6 +10,7 @@ Future<void> main() async {
       url: "https://uydzbhtiqlcmfvqtmrsd.supabase.co",
       anonKey:
       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV5ZHpiaHRpcWxjbWZ2cXRtcnNkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTA0MTE1MjQsImV4cCI6MjAyNTk4NzUyNH0.aC8qM2QihVzg8U92z5sRPGQ5YKIAyYnEaWws6IQBZAQ");
+  await DatabaseLocale.instance.database;
   runApp(MyApp());
 }
 
