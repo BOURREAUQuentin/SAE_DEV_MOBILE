@@ -26,6 +26,7 @@ class PretBD {
       final response = await Supabase.instance.client.from('PRET')
           .select()
           .eq('uuidPreteur', uuidPreteur)
+          .eq("statutPret", "Disponible")
           .order('datePublication', ascending: false);
       if (response != null) {
         return Future.value(
@@ -73,7 +74,7 @@ class PretBD {
           .eq('uuidPreteur', uuidDeteneur)
           .eq('titrePret', titrePret)
           .eq('descriptionPret', descriptionPret)
-          .eq("statusPret", "indisponible")
+          .eq("statutPret", "indisponible")
           .eq('dateDebutPret', dateDebutPret.toIso8601String())
           .eq('dateFinPret', dateFinPret.toIso8601String())
           .eq('idProduit', idProduit)
@@ -81,7 +82,12 @@ class PretBD {
         if (res != null) {
           final List<Map<String, dynamic>> data = res as List<
               Map<String, dynamic>>;
-          return data[0]['idPret'] as int; // Cast to int
+          if (data.isNotEmpty) {
+            return data[0]['idPret'] as int; // Cast to int
+          } else {
+            print("No data found for the given parameters");
+            return 0;
+          }
         } else {
           print("Erreur lors de la récupération des prêts");
           return 0;
@@ -132,6 +138,41 @@ class PretBD {
     catch (error) {
       print("Erreur lors de la récupération des prêts: $error");
       return Future.value(0);
+    }
+  }
+
+  static Future<List<Map<String, DateTime>>> getIndisponibilite(int idProduit ) async {
+    try {
+      final response = await Supabase.instance.client
+          .from('INDISPONIBILITE')
+          .select('dateDebut, dateFin')
+          .eq('idProduit', idProduit);
+      if (response != null && response.isNotEmpty) {
+        final List<Map<String, dynamic>> data = response as List<Map<String, dynamic>>;
+        return data.map((item) => {
+          'dateDebut': DateTime.parse(item['dateDebut']),
+          'dateFin': DateTime.parse(item['dateFin'])
+        }).toList();
+      } else {
+        print("Erreur lors de la récupération des dates d'indisponibilité");
+        return [];
+      }
+    }
+    catch (error) {
+      print("Erreur lors de la récupération des dates d'indisponibilité: $error");
+      return [];
+    }
+  }
+
+  static void modifierStatutPret(int idPret) async {
+    try {
+      await Supabase.instance.client.from('PRET').update
+        ({
+        'statutPret': "Indisponible",
+      }).eq('idPret', idPret);
+    }
+    catch (error) {
+      print("Erreur lors de la modification du statut du prêt: $error");
     }
   }
 }

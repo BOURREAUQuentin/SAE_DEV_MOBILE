@@ -66,12 +66,14 @@ class DemandeBD {
   }
 
 
-  static Future<List<DemandeBD>> getDemandeCat(int idCategorie) async {
+  static Future<List<DemandeBD>> getDemandeCat(int idCategorie,List<Map<String, dynamic>>  indiponibilite) async {
     try {
       final response = Supabase.instance.client.from('DEMANDE')
           .select()
           .eq('idCategorie', idCategorie)
           .eq("statutDemande", "En attente")
+          .not('dateDebutDemande', 'in', indiponibilite.map((e) => e['dateDebut']))
+          .not('dateFinDemande', 'in', indiponibilite.map((e) => e['dateFin']))
           .order('datePublication', ascending: false);
       return response.then((res) {
         if (res != null && res is List) {

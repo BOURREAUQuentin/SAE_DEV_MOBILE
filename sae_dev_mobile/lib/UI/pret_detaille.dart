@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:sae_dev_mobile/classes/demandeBD.dart';
 import '../classes/pretBD.dart';
+import '../classes/reservationBD.dart';
 import '../classes/utilisateurBD.dart';
 import 'home.dart';
 
@@ -79,8 +80,34 @@ class PretDetaille extends StatelessWidget {
     }
 
     var idCategori = await PretBD.getIdCategorie(pret.idProduit);
-    var demandes = await DemandeBD.getDemandeCat(idCategori);
+    var indisponibilite = await PretBD.getIndisponibilite(pret.idProduit);
+    print(indisponibilite);
+    var demandes = await DemandeBD.getDemandeCat(idCategori, indisponibilite);
 
+    if (demandes.isEmpty) {
+      // Si la liste de demandes est vide, affichez un message et retournez
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Aucune demande disponible'),
+            content: Text('Il n\'y a pas de demande disponible pour ce produit.'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context); // Fermer la popup
+                },
+                child: Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+      return;
+    }
+
+    var idDemande = 0;
+    DateTime now = DateTime.now();
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -101,8 +128,9 @@ class PretDetaille extends StatelessWidget {
                 onChanged: (String? value) {
                   // Mettez ici la logique pour gérer la sélection de la demande
                   print('Demande sélectionnée : $value');
+                  idDemande = int.parse(value!);
                 },
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                   hintText: 'Sélectionnez une demande',
                 ),
@@ -117,42 +145,29 @@ class PretDetaille extends StatelessWidget {
               child: Text('Annuler'),
             ),
             ElevatedButton(
-              onPressed: () async {
-                // Récupérer l'ID de la demande sélectionnée
-                String? selectedDemandeId = demandes.firstWhereOrNull(
-                      (demande) => demande.idDemande.toString() == selectedValue,
-                )?.idDemande.toString();
-
-                if (selectedDemandeId == null) {
-                  // Gérer le cas où aucune demande n'est sélectionnée
-                  return;
-                }
-
-                // Vérifier si l'objet est disponible
-                bool isAvailable = await checkAvailability(selectedDemandeId);
-                if (isAvailable) {
-                  // Confirmer le prêt
-                  var idPret = pret.idPret; // Récupérer l'ID du prêt
-                  // Ajouter le reste de votre logique pour confirmer le prêt
-                } else {
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        title: Text('Objet non disponible'),
-                        content: Text('L\'objet sélectionné n\'est plus disponible.'),
-                        actions: [
-                          TextButton(
-                            onPressed: () {
-                              Navigator.pop(context); // Fermer la popup
-                            },
-                            child: Text('OK'),
-                          ),
-                        ],
-                      );
-                    },
-                  );
-                }
+              onPressed: () {
+                var idPret = pret.idPret;
+                print(idDemande);
+                DemandeBD.modifierStatutDemande(
+                  idDemande,
+                  'Réservé',
+                );
+                ReservationBD.ajouterReservation(
+                  utilisateur.uuidUtilisateur,
+                  now,
+                  "en cours",
+                  idPret, // Utilisez directement idPret, pas besoin de cast
+                  idDemande,
+                );
+                PretBD.modifierStatutPret(
+                  idPret,
+                );
+                Navigator.pop(context); // Fermer la popup
+                Navigator.pop(context);
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => Home()), // Aller à la page home.dart
+                );
               },
               child: Text('Confirmer'),
             ),
@@ -160,12 +175,6 @@ class PretDetaille extends StatelessWidget {
         );
       },
     );
-  }
-
-  Future<bool> checkAvailability(String demandeId) async {
-    // Mettez ici votre logique pour vérifier si l'objet de la demande est disponible
-    // Retournez true si l'objet est disponible, sinon retournez false
-    return true; // Exemple de retour, à remplacer par votre propre logique
   }
 
 
