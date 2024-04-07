@@ -86,6 +86,7 @@ class DatabaseLocale {
         statutPret TEXT,
         dateDebutPret TEXT,
         dateFinPret TEXT,
+        estPublie TEXT,
         idProduit INTEGER,
         FOREIGN KEY(idProduit) REFERENCES PRODUIT(idProduit)
       )
@@ -101,6 +102,7 @@ class DatabaseLocale {
         statutDemande TEXT,
         dateDebutDemande TEXT,
         dateFinDemande TEXT,
+        estPublie TEXT,
         idCategorie INTEGER,
         FOREIGN KEY(idCategorie) REFERENCES CATEGORIE(idCategorie)
       )
@@ -126,6 +128,11 @@ class DatabaseLocale {
   Future<List<Map<String, dynamic>>> getPrets() async {
     final db = await instance.database;
     return db.query('PRET');
+  }
+
+  Future<List<Map<String, dynamic>>> getPretsNonPublies() async {
+    final db = await instance.database;
+    return db.query('PRET', where: 'estPublie = ?', whereArgs: ['N']);
   }
 
   Future<List<Map<String, dynamic>>> getCategories() async {
@@ -167,6 +174,7 @@ class DatabaseLocale {
         'statutDemande': statutDemande,
         'dateDebutDemande': dateDebutDemande,
         'dateFinDemande': dateFinDemande,
+        'estPublie': 'N',
         'idCategorie': idCategorie,
       },
     );
@@ -183,6 +191,7 @@ class DatabaseLocale {
         'statutPret': statutPret,
         'dateDebutPret': dateDebutPret,
         'dateFinPret': dateFinPret,
+        'estPublie': 'N',
         'idProduit': idProduit,
       },
     );
@@ -199,5 +208,19 @@ class DatabaseLocale {
     final idCategorie = await db.insert('CATEGORIE', {'nomCategorie': nomCategorie});
 
     return idCategorie;
+  }
+
+  Future<void> publierPret(int idPret) async {
+    try {
+      final db = await instance.database;
+      await db.update(
+        'PRET',
+        {'estPublie': 'O'},
+        where: 'idPret = ?',
+        whereArgs: [idPret],
+      );
+    } catch (error) {
+      print("Erreur lors de la publication du prêt : $error");
+    }
   }
 }

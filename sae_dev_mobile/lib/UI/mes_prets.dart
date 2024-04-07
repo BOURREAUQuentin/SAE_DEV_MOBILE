@@ -20,7 +20,7 @@ class _MesPretsState extends State<MesPrets> {
   }
 
   Future<void> _chargerPrets() async {
-    final prets = await DatabaseLocale.instance.getPrets().then((prets) {
+    final prets = await DatabaseLocale.instance.getPretsNonPublies().then((prets) {
       return prets.map((pret) => PretBD.fromMap(pret)).toList();
     });
     print(prets);
@@ -145,6 +145,12 @@ class _MesPretsState extends State<MesPrets> {
     if (confirme) {
       // insertion en ligne (distant) du prêt
       await PretBD.insertPret(pret);
+
+      // on passe le pret en estPublie = "O" pour ne plus l'afficher des Mes Prets mais dans Mes publications
+      await PretBD.updatePretPublication(pret.idPret);
+
+      // rafraîchi la liste des prêts après avoir publié un prêt en ligne
+      await _chargerPrets();
     }
   }
 }

@@ -1,6 +1,8 @@
 import 'package:sae_dev_mobile/classes/utilisateurBD.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../database/databaseLocale.dart';
+
 class PretBD {
   final int idPret;
   final String titrePret;
@@ -88,6 +90,15 @@ class PretBD {
     } catch (error) {
       print("Erreur lors de la récupération du maximum de l'ID de prêt: $error");
       return 0;
+    }
+  }
+
+  static Future<void> updatePretPublication(int idPret) async {
+    try {
+      await DatabaseLocale.instance.publierPret(idPret);
+    }
+    catch (error) {
+      print("Erreur lors de la publication du prêt : $error");
     }
   }
 }

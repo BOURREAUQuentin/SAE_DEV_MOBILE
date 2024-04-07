@@ -119,7 +119,7 @@ class Profil extends StatelessWidget {
                           },
                         ),
                         ProfilButton(
-                          text: 'Mes réservations',
+                          text: 'Mes publications',
                           icon: Icons.bookmark,
                           onPressed: () {
                             // Action lorsque le bouton "Mes annonces" est appuyé
