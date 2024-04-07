@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'mes_produits.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../classes/utilisateurBD.dart';
-import 'home.dart';
 import 'login.dart';
 
 class Profil extends StatelessWidget {
@@ -93,7 +93,10 @@ class Profil extends StatelessWidget {
                           text: 'Mes objets',
                           icon: Icons.inventory,
                           onPressed: () {
-                            // Action lorsque le bouton "Mes objets" est appuyé
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => MesProduits()),
+                            );
                           },
                         ),
                         ProfilButton(
@@ -119,7 +122,7 @@ class Profil extends StatelessWidget {
                         ),
                       ],
                     ),
-                    Divider(), // Séparateur entre la liste et le menu
+                    Divider(),
                   ],
                 ),
               );
@@ -186,8 +189,8 @@ class ProfilButton extends StatelessWidget {
         icon: Icon(icon),
         label: Text(text),
         style: TextButton.styleFrom(
-          alignment: Alignment.centerLeft, // Alignement à gauche
-          side: BorderSide(color: Colors.grey), // Bordure
+          alignment: Alignment.centerLeft,
+          side: BorderSide(color: Colors.grey),
         ),
       ),
     );
