@@ -9,6 +9,23 @@ class CategorieBD {
     required this.nomCategorie,
   });
 
+  static Future<List<Map<String, dynamic>>> getCategories() async {
+    try {
+      final response = await Supabase.instance.client.from('CATEGORIE').select();
+      print(response);
+      if (response != null) {
+        return response;
+      }
+      else {
+        print("Erreur lors de la récupération des demandes");
+        return [];
+      }
+    } catch (error) {
+      print("Erreur lors de la récupération des demandes: $error");
+      return [];
+    }
+  }
+
   static Future<void> insertCategorie(int idCategorie, String nomCategorie) async {
     try {
       await Supabase.instance.client.from('CATEGORIE').insert({

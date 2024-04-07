@@ -26,7 +26,7 @@ class _AjouterProduitState extends State<AjouterProduit> {
   }
 
   Future<void> _chargerCategories() async {
-    final categories = await DatabaseLocale.instance.getCategories();
+    final categories = await CategorieBD.getCategories();
     setState(() {
       _categories = categories;
     });
