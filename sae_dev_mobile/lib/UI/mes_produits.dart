@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../database/databaseLocale.dart';
 import '../classes/produitBD.dart';
 import 'ajouter_produit.dart';
+import 'detail_produit.dart';
 
 class MesProduits extends StatefulWidget {
   @override
@@ -39,6 +40,14 @@ class _MesProduitsState extends State<MesProduits> {
           return ListTile(
             title: Text(produit.nomProduit),
             subtitle: Text(produit.descriptionProduit),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => DetailProduit(produit: produit),
+                ),
+              );
+            },
           );
         },
       ),

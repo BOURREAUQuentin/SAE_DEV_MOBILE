@@ -41,65 +41,6 @@ class DatabaseLocale {
     await db.execute('DROP TABLE IF EXISTS PRODUIT');
     await db.execute('DROP TABLE IF EXISTS DEMANDE');
     await db.execute('DROP TABLE IF EXISTS PRET');
-    await db.execute('''
-      CREATE TABLE IF NOT EXISTS CATEGORIE(
-        idCategorie INTEGER PRIMARY KEY AUTOINCREMENT,
-        nomCategorie TEXT
-      )
-    ''');
-
-    // Création de la table PRODUIT
-    await db.execute('''
-      CREATE TABLE IF NOT EXISTS PRODUIT(
-        idProduit INTEGER PRIMARY KEY AUTOINCREMENT,
-        nomProduit TEXT,
-        descriptionProduit TEXT,
-        lienImageProduit TEXT,
-        idCategorie INTEGER,
-        FOREIGN KEY(idCategorie) REFERENCES CATEGORIE(idCategorie)
-      )
-    ''');
-
-    // Création de la table INDISPONIBILITE
-    await db.execute('''
-      CREATE TABLE IF NOT EXISTS INDISPONIBILITE(
-        idIndisponibilite INTEGER PRIMARY KEY AUTOINCREMENT,
-        dateDebut TEXT,
-        dateFin TEXT,
-        idProduit INTEGER,
-        FOREIGN KEY(idProduit) REFERENCES PRODUIT(idProduit)
-      )
-    ''');
-
-    // Création de la table PRET
-    await db.execute('''
-      CREATE TABLE IF NOT EXISTS PRET(
-        idPret INTEGER PRIMARY KEY AUTOINCREMENT,
-        titrePret TEXT,
-        descriptionPret TEXT,
-        datePublication TEXT,
-        statutPret TEXT,
-        dateDebutPret TEXT,
-        dateFinPret TEXT,
-        idProduit INTEGER,
-        FOREIGN KEY(idProduit) REFERENCES PRODUIT(idProduit)
-      )
-    ''');
-
-    // Création de la table DEMANDE
-    await db.execute('''
-      CREATE TABLE IF NOT EXISTS DEMANDE(
-        idDemande INTEGER PRIMARY KEY AUTOINCREMENT,
-        titreDemande TEXT,
-        descriptionDemande TEXT,
-        datePublication TEXT,
-        statutDemande TEXT,
-        dateDebutDemande TEXT,
-        dateFinDemande TEXT,
-        idCategorie INTEGER,
-        FOREIGN KEY(idCategorie) REFERENCES CATEGORIE(idCategorie)
-      )
-    ''');
   }
 
   Future<void> _createDB(Database db, int version) async {
@@ -190,6 +131,15 @@ class DatabaseLocale {
   Future<List<Map<String, dynamic>>> getCategories() async {
     final db = await instance.database;
     return db.query('CATEGORIE');
+  }
+
+  Future<Map<String, dynamic>?> getCategorieByName(String nomCategorie) async {
+    final db = await instance.database;
+    final result = await db.query('CATEGORIE', where: 'nomCategorie = ?', whereArgs: [nomCategorie]);
+    if (result.isNotEmpty) {
+      return result.first;
+    }
+    return null;
   }
 
   /* --------------------------------- Méthodes de setteurs --------------------------  */

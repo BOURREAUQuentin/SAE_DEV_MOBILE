@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:sae_dev_mobile/classes/categorieBD.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import '../database/databaseLocale.dart';
 import 'mes_produits.dart';
 
@@ -171,6 +173,8 @@ class _AjouterProduitState extends State<AjouterProduit> {
     // Effectuez l'insertion en base de données en utilisant la méthode insertProduit de votre classe DatabaseLocale
     await DatabaseLocale.instance.insertProduit(nomProduit, descriptionProduit, lienImageProduit, _selectedCategoryId);
 
+    await CategorieBD.insertCategorie(_selectedCategoryId, _nouvelleCategorieController.text);
+
     // Affichez un message de succès
     showDialog(
       context: context,
@@ -181,7 +185,7 @@ class _AjouterProduitState extends State<AjouterProduit> {
           TextButton(
             onPressed: () {
               Navigator.pop(context);
-              Navigator.pop(context); // Revenez à la page précédente après l'ajout réussi
+              Navigator.pop(context);
             },
             child: Text('OK'),
           ),
