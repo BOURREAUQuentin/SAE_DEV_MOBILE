@@ -26,8 +26,8 @@ class DemandeBD {
       final response = await Supabase.instance.client.from('DEMANDE')
           .select()
           .neq('uuidDemandeur', uuidUtilisateur)
+          .eq('statutDemande', 'En attente')
           .order('datePublication', ascending: false);
-      print(response);
       if (response != null) {
         return response.map((item) => DemandeBD.fromMap(item)).toList();
       }
@@ -52,5 +52,16 @@ class DemandeBD {
       dateFinDemande: DateTime.tryParse(map['dateFinDemande'] ?? '') ?? DateTime.now(),
       idCategorie: map['idCategorie'] ?? 0,
     );
+  }
+
+  static void modifierStatutDemande(int idDemande, String statutDemande) async {
+    try {
+      await Supabase.instance.client.from('DEMANDE').update({
+        'statutDemande': statutDemande,
+      }).eq('idDemande', idDemande);
+    }
+    catch (error) {
+      print("Erreur lors de la modification du statut de la demande: $error");
+    }
   }
 }

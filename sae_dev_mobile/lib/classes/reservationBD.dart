@@ -1,3 +1,5 @@
+import 'package:supabase_flutter/supabase_flutter.dart';
+
 class ReservationBD {
   final int idReservation;
   final DateTime dateReservation;
@@ -12,4 +14,20 @@ class ReservationBD {
     required this.idPret,
     required this.idDemande,
   });
+  static Future<void> ajouterReservation(String uuidReserveur, DateTime dateReservation, String statutReservation, int idPret, int idDemande) async {
+    try {
+      await Supabase.instance.client.from('RESERVATION').insert({
+
+        'dateReservation': dateReservation.toIso8601String(),
+        'statutReservation': statutReservation,
+        'idPret': idPret,
+        'idDemande': idDemande,
+        'uuidReserveur': uuidReserveur,
+      });
+    }
+    catch (error) {
+      print("Erreur lors de l'ajout de la réservation: $error");
+    }
+  }
+
 }
