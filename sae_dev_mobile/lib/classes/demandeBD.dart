@@ -64,4 +64,25 @@ class DemandeBD {
       print("Erreur lors de la modification du statut de la demande: $error");
     }
   }
+
+
+  static Future<List<DemandeBD>> getDemandeCat(int idCategorie) async {
+    try {
+      final response = Supabase.instance.client.from('DEMANDE')
+          .select()
+          .eq('idCategorie', idCategorie)
+          .eq("statutDemande", "En attente")
+          .order('datePublication', ascending: false);
+      return response.then((res) {
+        if (res != null && res is List) {
+          return (res as List).map((item) => DemandeBD.fromMap(item)).toList();
+        } else {
+          return [];
+        }
+      });
+    } catch (error) {
+      print("Erreur lors de la récupération des demandes: $error");
+      return Future.value([]);
+    }
+  }
 }
