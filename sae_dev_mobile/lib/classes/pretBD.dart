@@ -165,7 +165,7 @@ class PretBD {
       print("Erreur lors de la modification du statut du prêt: $error");
     }
   }
-}
+
 
   static Future<List<PretBD>> getMesPretsPublies(String uuidUtilisateur) async {
     try {

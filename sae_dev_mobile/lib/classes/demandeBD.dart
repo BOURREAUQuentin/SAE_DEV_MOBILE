@@ -109,6 +109,8 @@ class DemandeBD {
     } catch (error) {
       print("Erreur lors de la récupération des demandes: $error");
       return Future.value([]);
+    }
+  }
 
   static Future<void> insertDemande(DemandeBD demande) async {
     try {
