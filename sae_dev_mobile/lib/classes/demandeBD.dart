@@ -29,8 +29,8 @@ class DemandeBD {
       final response = await Supabase.instance.client.from('DEMANDE')
           .select()
           .neq('uuidDemandeur', uuidUtilisateur)
+          .eq('statutDemande', 'En attente')
           .order('datePublication', ascending: false);
-      print(response);
       if (response != null) {
         return response.map((item) => DemandeBD.fromMap(item)).toList();
       }
@@ -76,6 +76,39 @@ class DemandeBD {
       idCategorie: map['idCategorie'] ?? 0,
     );
   }
+
+
+  static void modifierStatutDemande(int idDemande, String statutDemande) async {
+    try {
+      await Supabase.instance.client.from('DEMANDE').update({
+        'statutDemande': statutDemande,
+      }).eq('idDemande', idDemande);
+    }
+    catch (error) {
+      print("Erreur lors de la modification du statut de la demande: $error");
+    }
+  }
+
+
+  static Future<List<DemandeBD>> getDemandeCat(int idCategorie,List<Map<String, dynamic>>  indiponibilite) async {
+    try {
+      final response = Supabase.instance.client.from('DEMANDE')
+          .select()
+          .eq('idCategorie', idCategorie)
+          .eq("statutDemande", "En attente")
+          .not('dateDebutDemande', 'in', indiponibilite.map((e) => e['dateDebut']))
+          .not('dateFinDemande', 'in', indiponibilite.map((e) => e['dateFin']))
+          .order('datePublication', ascending: false);
+      return response.then((res) {
+        if (res != null && res is List) {
+          return (res as List).map((item) => DemandeBD.fromMap(item)).toList();
+        } else {
+          return [];
+        }
+      });
+    } catch (error) {
+      print("Erreur lors de la récupération des demandes: $error");
+      return Future.value([]);
 
   static Future<void> insertDemande(DemandeBD demande) async {
     try {
@@ -134,6 +167,7 @@ class DemandeBD {
       await DatabaseLocale.instance.publierDemande(idDemande);
     } catch (error) {
       print("Erreur lors de la publication de la demande : $error");
+
     }
   }
 }

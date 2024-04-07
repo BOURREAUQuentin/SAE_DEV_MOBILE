@@ -1,7 +1,7 @@
 import 'package:sae_dev_mobile/classes/utilisateurBD.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-
 import '../database/databaseLocale.dart';
+
 
 class PretBD {
   final int idPret;
@@ -24,25 +24,148 @@ class PretBD {
     required this.idProduit,
   });
 
-  static Future<List<PretBD>> getPrets(String uuidUtilisateur) async {
+  static Future<List<PretBD>> getPrets(String uuidPreteur) async {
     try {
       final response = await Supabase.instance.client.from('PRET')
           .select()
-          .neq('uuidPreteur', uuidUtilisateur)
+          .eq('uuidPreteur', uuidPreteur)
+          .eq("statutPret", "Disponible")
           .order('datePublication', ascending: false);
-      print(response);
       if (response != null) {
-        return response.map((item) => PretBD.fromMap(item)).toList();
+        return Future.value(
+            response.map((item) => PretBD.fromMap(item)).toList() as List<
+                PretBD>);
       }
       else {
-        print("Erreur lors de la récupération des prets");
-        return [];
+        print("Erreur lors de la récupération des prêts");
+        return Future.value([]);
       }
     } catch (error) {
-      print("Erreur lors de la récupération des prets: $error");
+      print("Erreur lors de la récupération des prêts: $error");
+      return Future.value([]);
+    }
+  }
+
+  static Future<void> ajouterPret(String uuidPreteur, String titrePret,
+      String descriptionPret, DateTime dateDebutPret, DateTime dateFinPret,
+      int idProduit) async {
+    try {
+      await Supabase.instance.client.from('PRET').insert({
+
+        'titrePret': titrePret,
+        'descriptionPret': descriptionPret,
+        'datePublication': DateTime.now().toIso8601String(),
+        'statutPret': 'Disponible',
+        'dateDebutPret': dateDebutPret.toIso8601String(),
+        'dateFinPret': dateFinPret.toIso8601String(),
+        'idProduit': idProduit,
+        'uuidPreteur': uuidPreteur,
+      });
+      print("ajouterPret\n");
+    }
+    catch (error) {
+      print("Erreur lors de l'ajout du prêt: $error");
+    }
+  }
+
+  static Future<int> getidPret(String uuidDeteneur, String titrePret,
+      String descriptionPret, DateTime dateDebutPret, DateTime dateFinPret,
+      int idProduit) async {
+    try {
+      final response = Supabase.instance.client.from('PRET')
+          .select('idPret')
+          .eq('uuidPreteur', uuidDeteneur)
+          .eq('titrePret', titrePret)
+          .eq('descriptionPret', descriptionPret)
+          .eq("statutPret", "indisponible")
+          .eq('dateDebutPret', dateDebutPret.toIso8601String())
+          .eq('dateFinPret', dateFinPret.toIso8601String())
+          .eq('idProduit', idProduit)
+          .then((res) {
+        if (res != null) {
+          final List<Map<String, dynamic>> data = res as List<
+              Map<String, dynamic>>;
+          if (data.isNotEmpty) {
+            return data[0]['idPret'] as int; // Cast to int
+          } else {
+            print("No data found for the given parameters");
+            return 0;
+          }
+        } else {
+          print("Erreur lors de la récupération des prêts");
+          return 0;
+        }
+      });
+
+      return response;
+    }
+    catch (error) {
+      print("Erreur lors de la récupération des prêts: $error");
+      return Future.value(0);
+    }
+  }
+
+  static Future<int> getIdCategorie(int idPret) async {
+    //je veut recuperer l'id du categorie qui corespond au produit de la table produit
+    try {
+      final response = Supabase.instance.client
+          .from('PRODUIT')
+          .select('idCategorie')
+          .eq('idProduit', idPret)
+          .then((res) {
+        if (res != null) {
+          final List<Map<String, dynamic>> data = res as List<
+              Map<String, dynamic>>;
+          return data[0]['idCategorie'] as int; // Cast to int
+        } else {
+          print("Erreur lors de la récupération des prêts");
+          return 0;
+        }
+      });
+
+      return response;
+    }
+    catch (error) {
+      print("Erreur lors de la récupération des prêts: $error");
+      return Future.value(0);
+    }
+  }
+
+  static Future<List<Map<String, DateTime>>> getIndisponibilite(int idProduit ) async {
+    try {
+      final response = await Supabase.instance.client
+          .from('INDISPONIBILITE')
+          .select('dateDebut, dateFin')
+          .eq('idProduit', idProduit);
+      if (response != null && response.isNotEmpty) {
+        final List<Map<String, dynamic>> data = response as List<Map<String, dynamic>>;
+        return data.map((item) => {
+          'dateDebut': DateTime.parse(item['dateDebut']),
+          'dateFin': DateTime.parse(item['dateFin'])
+        }).toList();
+      } else {
+        print("Erreur lors de la récupération des dates d'indisponibilité");
+        return [];
+      }
+    }
+    catch (error) {
+      print("Erreur lors de la récupération des dates d'indisponibilité: $error");
       return [];
     }
   }
+
+  static void modifierStatutPret(int idPret) async {
+    try {
+      await Supabase.instance.client.from('PRET').update
+        ({
+        'statutPret': "Indisponible",
+      }).eq('idPret', idPret);
+    }
+    catch (error) {
+      print("Erreur lors de la modification du statut du prêt: $error");
+    }
+  }
+}
 
   static Future<List<PretBD>> getMesPretsPublies(String uuidUtilisateur) async {
     try {
