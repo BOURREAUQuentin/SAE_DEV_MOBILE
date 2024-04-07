@@ -135,6 +135,11 @@ class DatabaseLocale {
     return db.query('PRET', where: 'estPublie = ?', whereArgs: ['N']);
   }
 
+  Future<List<Map<String, dynamic>>> getPublications() async {
+    final db = await instance.database;
+    return db.query('PRET', where: 'estPublie = ?', whereArgs: ['O']);
+  }
+
   Future<List<Map<String, dynamic>>> getCategories() async {
     final db = await instance.database;
     return db.query('CATEGORIE');

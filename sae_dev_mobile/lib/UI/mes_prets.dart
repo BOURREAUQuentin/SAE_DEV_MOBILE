@@ -102,7 +102,6 @@ class _MesPretsState extends State<MesPrets> {
                 child: TextButton.icon(
                   onPressed: () {
                     Navigator.pop(context);
-                    Navigator.pop(context);
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(builder: (context) => Profil()),

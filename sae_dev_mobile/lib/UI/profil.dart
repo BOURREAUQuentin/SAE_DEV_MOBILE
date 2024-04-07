@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sae_dev_mobile/UI/mes_prets.dart';
+import 'package:sae_dev_mobile/UI/mes_publications.dart';
 import 'home.dart';
 import 'mes_produits.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -122,7 +123,10 @@ class Profil extends StatelessWidget {
                           text: 'Mes publications',
                           icon: Icons.bookmark,
                           onPressed: () {
-                            // Action lorsque le bouton "Mes annonces" est appuyé
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => MesPublications()),
+                            );
                           },
                         ),
                       ],
