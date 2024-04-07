@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sae_dev_mobile/UI/mes_prets.dart';
+import 'home.dart';
 import 'mes_produits.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../classes/utilisateurBD.dart';
@@ -153,6 +154,9 @@ class Profil extends StatelessWidget {
                 child: TextButton.icon(
                   onPressed: () {
                     Navigator.pop(context);
+                    Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => Home()));
                   },
                   icon: Icon(Icons.home),
                   label: Text('Accueil'),

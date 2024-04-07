@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:sae_dev_mobile/UI/profil.dart';
 import '../database/databaseLocale.dart';
 import '../classes/produitBD.dart';
 import 'ajouter_produit.dart';
 import 'detail_produit.dart';
+import 'home.dart';
 
 class MesProduits extends StatefulWidget {
   @override
@@ -81,6 +83,10 @@ class _MesProduitsState extends State<MesProduits> {
                 child: TextButton.icon(
                   onPressed: () {
                     Navigator.pop(context);
+                    Navigator.pop(context);
+                    Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => Home()));
                   },
                   icon: Icon(Icons.home),
                   label: Text('Accueil'),
@@ -90,6 +96,10 @@ class _MesProduitsState extends State<MesProduits> {
                 child: TextButton.icon(
                   onPressed: () {
                     Navigator.pop(context);
+                    Navigator.pop(context);
+                    Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => Profil()));
                   },
                   icon: Icon(Icons.person),
                   label: Text('Profil'),
