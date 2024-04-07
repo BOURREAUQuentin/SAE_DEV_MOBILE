@@ -24,6 +24,46 @@ class PretBD {
     required this.idProduit,
   });
 
+  static Future<List<PretBD>> getPrets(String uuidUtilisateur) async {
+    try {
+      final response = await Supabase.instance.client.from('PRET')
+          .select()
+          .neq('uuidPreteur', uuidUtilisateur)
+          .order('datePublication', ascending: false);
+      print(response);
+      if (response != null) {
+        return response.map((item) => PretBD.fromMap(item)).toList();
+      }
+      else {
+        print("Erreur lors de la récupération des prets");
+        return [];
+      }
+    } catch (error) {
+      print("Erreur lors de la récupération des prets: $error");
+      return [];
+    }
+  }
+
+  static Future<List<PretBD>> getMesPretsPublies(String uuidUtilisateur) async {
+    try {
+      final response = await Supabase.instance.client.from('PRET')
+          .select()
+          .eq('uuidPreteur', uuidUtilisateur)
+          .order('datePublication', ascending: false);
+      print(response);
+      if (response != null) {
+        return response.map((item) => PretBD.fromMap(item)).toList();
+      }
+      else {
+        print("Erreur lors de la récupération des prets");
+        return [];
+      }
+    } catch (error) {
+      print("Erreur lors de la récupération des prets: $error");
+      return [];
+    }
+  }
+
   factory PretBD.fromMap(Map<String, dynamic> map) {
     return PretBD(
       idPret: map['idPret'],

@@ -27,7 +27,6 @@ class DetailProduit extends StatelessWidget {
               style: TextStyle(fontSize: 16),
             ),
             SizedBox(height: 10),
-            // Ajoutez ici d'autres informations sur le produit si nécessaire
           ],
         ),
       ),

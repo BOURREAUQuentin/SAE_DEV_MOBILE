@@ -44,6 +44,26 @@ class DemandeBD {
     }
   }
 
+  static Future<List<DemandeBD>> getMesDemandesPubliees(String uuidUtilisateur) async {
+    try {
+      final response = await Supabase.instance.client.from('DEMANDE')
+          .select()
+          .eq('uuidDemandeur', uuidUtilisateur)
+          .order('datePublication', ascending: false);
+      print(response);
+      if (response != null) {
+        return response.map((item) => DemandeBD.fromMap(item)).toList();
+      }
+      else {
+        print("Erreur lors de la récupération des demandes");
+        return [];
+      }
+    } catch (error) {
+      print("Erreur lors de la récupération des demandes: $error");
+      return [];
+    }
+  }
+
   static DemandeBD fromMap(Map<String, dynamic> map) {
     return DemandeBD(
       idDemande: map['idDemande'] ?? 0,
