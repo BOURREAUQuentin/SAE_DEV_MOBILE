@@ -3,12 +3,16 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 class ProduitBD {
   final int idProduit;
   final String nomProduit;
+  final String descriptionProduit;
+  final String lienImageProduit;
   final int idCategorie;
 
   ProduitBD({
     required this.idProduit,
     required this.nomProduit,
     required this.idCategorie,
+    required this.descriptionProduit,
+    required this.lienImageProduit,
   });
 
   static Future<List<ProduitBD>> getProduit(String uuidUtilisateur, DateTime DateDebut, DateTime Datefin, idCategorie) async {
@@ -47,13 +51,6 @@ class ProduitBD {
     }
   }
 
-  static ProduitBD fromMap(Map<String, dynamic> map) {
-    return ProduitBD(
-      idProduit: map['idProduit'] ?? 0,
-      nomProduit: map['nomProduit'] ?? '',
-      idCategorie: map['idCategorie'] ?? 0,
-    );
-  }
   static Future<int> getidProduit(String uuidUtilisateur, String nomProduit) async {
     try {
       final response = Supabase.instance.client
@@ -77,7 +74,13 @@ class ProduitBD {
     }
   }
 
-
-
-
+  factory ProduitBD.fromMap(Map<String, dynamic> map) {
+    return ProduitBD(
+      idProduit: map['idProduit'],
+      nomProduit: map['nomProduit'],
+      descriptionProduit: map['descriptionProduit'],
+      lienImageProduit: map['lienImageProduit'],
+      idCategorie: map['idCategorie'],
+    );
+  }
 }

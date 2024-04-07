@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:sae_dev_mobile/UI/mes_demandes.dart';
+import 'package:sae_dev_mobile/UI/mes_prets.dart';
+import 'package:sae_dev_mobile/UI/mes_publications.dart';
+import 'home.dart';
+import 'mes_produits.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../classes/utilisateurBD.dart';
-import 'home.dart';
 import 'login.dart';
 
 class Profil extends StatelessWidget {
@@ -93,33 +97,45 @@ class Profil extends StatelessWidget {
                           text: 'Mes objets',
                           icon: Icons.inventory,
                           onPressed: () {
-                            // Action lorsque le bouton "Mes objets" est appuyé
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => MesProduits()),
+                            );
                           },
                         ),
                         ProfilButton(
                           text: 'Mes prêts',
                           icon: Icons.assignment_turned_in,
                           onPressed: () {
-                            // Action lorsque le bouton "Mes prêts" est appuyé
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => MesPrets()),
+                            );
                           },
                         ),
                         ProfilButton(
-                          text: 'Mes réservations',
-                          icon: Icons.bookmark,
-                          onPressed: () {
-                            // Action lorsque le bouton "Mes réservations" est appuyé
-                          },
-                        ),
-                        ProfilButton(
-                          text: 'Mes annonces',
+                          text: 'Mes demandes',
                           icon: Icons.note,
                           onPressed: () {
-                            // Action lorsque le bouton "Mes annonces" est appuyé
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => MesDemandes()),
+                            );
+                          },
+                        ),
+                        ProfilButton(
+                          text: 'Mes publications',
+                          icon: Icons.bookmark,
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => MesPublications()),
+                            );
                           },
                         ),
                       ],
                     ),
-                    Divider(), // Séparateur entre la liste et le menu
+                    Divider(),
                   ],
                 ),
               );
@@ -136,16 +152,10 @@ class Profil extends StatelessWidget {
               Expanded(
                 child: TextButton.icon(
                   onPressed: () {
-                    // Navigation vers la page de création d'annonce
-                  },
-                  icon: Icon(Icons.add),
-                  label: Text('Ajouter'),
-                ),
-              ),
-              Expanded(
-                child: TextButton.icon(
-                  onPressed: () {
                     Navigator.pop(context);
+                    Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => Home()));
                   },
                   icon: Icon(Icons.home),
                   label: Text('Accueil'),
@@ -153,7 +163,9 @@ class Profil extends StatelessWidget {
               ),
               Expanded(
                 child: TextButton.icon(
-                  onPressed: () {},
+                  onPressed: () {
+                    // aucune action
+                  },
                   icon: Icon(Icons.person),
                   label: Text('Profil'),
                 ),
@@ -186,8 +198,8 @@ class ProfilButton extends StatelessWidget {
         icon: Icon(icon),
         label: Text(text),
         style: TextButton.styleFrom(
-          alignment: Alignment.centerLeft, // Alignement à gauche
-          side: BorderSide(color: Colors.grey), // Bordure
+          alignment: Alignment.centerLeft,
+          side: BorderSide(color: Colors.grey),
         ),
       ),
     );
